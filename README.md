@@ -1,4 +1,4 @@
-# Projeto Sales
+# Projeto de Vendas (em Andamento)
 
 Projeto final do curso "C# COMPLETO Programação Orientada a Objetos + Projetos" do professor Nelio Alves.
 
