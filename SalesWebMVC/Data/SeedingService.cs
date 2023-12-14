@@ -1,9 +1,8 @@
-﻿using SalesWebMVC.Models;
-using SalesWebMVC.Models.Enums;
+﻿using SalesWebMVC.Models.Enums;
 using System;
 using System.Linq;
 
-namespace SalesWebMVC.Data
+namespace SalesWebMVC.Models
 {
     public class SeedingService
     {

@@ -10,7 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SalesWebMVC.Data;
+using SalesWebMVC.Models;
+using SalesWebMVC.Services;
 
 namespace SalesWebMVC
 {
@@ -40,8 +41,10 @@ namespace SalesWebMVC
                     options.UseMySql(Configuration.GetConnectionString("SalesWebMVCContext"), builder => 
                     builder.MigrationsAssembly("SalesWebMVC")));
 
-            // registra o serviço no sistema de injeção de dependência da aplicação
+            // registra os serviços no sistema de injeção de dependência da aplicação
+            // isso permite que o serviço seja injetado em outras classes
             services.AddScoped<SeedingService>();
+            services.AddScoped<SellerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
