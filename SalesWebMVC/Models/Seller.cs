@@ -9,12 +9,21 @@ namespace SalesWebMVC.Models
     {
         // PROPRIEDADES
         public int Id { get; set; }
+
+        // obrigatório
+        // o {0} pega o nome do atributo
+        [Required(ErrorMessage = "{0} required")]
+        // tamanho do nome
+        [StringLength(60, MinimumLength = 2, ErrorMessage = "{0} size should be between {2} and {1}")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "{0} required")]
+        [EmailAddress(ErrorMessage = "Enter a valid email")]
         // transforma o texto do email pra link de email
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "{0} required")]
         // utiliza a annotation Display pra formatar o título que vai aparecer na coluna
         [Display(Name = "Birth Date")]
         // formata a data
@@ -22,13 +31,17 @@ namespace SalesWebMVC.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; }
 
+        [Required(ErrorMessage = "{0} required")]
+        [Range(100.0, 50000.0, ErrorMessage = "{0} must be from {1} to {2}")]
         [Display(Name = "Base Salary")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
         public double BaseSalary { get; set; }
         // associação vendedor e departamento (o seller só pode ter 1 departamento, por isso é uma propriedade normal e não uma lista) - 1 pra 1
+        
         public Department Department { get; set; }
         // vai guardar o Id do departamento, que não pode ser nulo
         public int DepartmentId { get; set; }
+        
         // associacao vendedor e registro de vendas (1 vendedor pode ter várias vendas) - 1 pra N
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
 
