@@ -53,6 +53,7 @@ namespace SalesWebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Delete GET
         // recebe um int opcional
         // método leva leva o item a ser deletado pra view Delete
         public IActionResult Delete(int? id)
@@ -81,6 +82,23 @@ namespace SalesWebMVC.Controllers
             _sellerService.Remove(id);
             // depois de deletar, retorna pra Index
             return RedirectToAction(nameof(Index));
+        }
+
+        // Details GET
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
         }
     }
 }
