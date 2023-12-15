@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace SalesWebMVC.Models
@@ -9,8 +10,20 @@ namespace SalesWebMVC.Models
         // PROPRIEDADES
         public int Id { get; set; }
         public string Name { get; set; }
+
+        // transforma o texto do email pra link de email
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        // utiliza a annotation Display pra formatar o título que vai aparecer na coluna
+        [Display(Name = "Birth Date")]
+        // formata a data
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; }
+
+        [Display(Name = "Base Salary")]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
         public double BaseSalary { get; set; }
         // associação vendedor e departamento (o seller só pode ter 1 departamento, por isso é uma propriedade normal e não uma lista) - 1 pra 1
         public Department Department { get; set; }
