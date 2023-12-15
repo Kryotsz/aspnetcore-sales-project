@@ -22,8 +22,6 @@ namespace SalesWebMVC.Services
         // método que insere o vendedor no banco de dados
         public void Insert(Seller obj)
         {
-            // pega o primeiro departamento do banco de dados e associa com o vendedor
-            obj.Department = _context.Department.First();
             // adiciona o vendedor ao banco de dados
             _context.Add(obj);
             // salva as alterações
