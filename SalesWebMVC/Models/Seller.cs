@@ -14,6 +14,8 @@ namespace SalesWebMVC.Models
         public double BaseSalary { get; set; }
         // associação vendedor e departamento (o seller só pode ter 1 departamento, por isso é uma propriedade normal e não uma lista) - 1 pra 1
         public Department Department { get; set; }
+        // vai guardar o Id do departamento, que não pode ser nulo
+        public int DepartmentId { get; set; }
         // associacao vendedor e registro de vendas (1 vendedor pode ter várias vendas) - 1 pra N
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
 
