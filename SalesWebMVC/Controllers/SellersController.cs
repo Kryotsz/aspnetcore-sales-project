@@ -30,6 +30,7 @@ namespace SalesWebMVC.Controllers
             return View(list);
         }
 
+        // método Create que leva os dados pra view Create
         public IActionResult Create()
         {
             // chama o método que obtém os departamentos ordenados por nome
@@ -49,6 +50,36 @@ namespace SalesWebMVC.Controllers
             _sellerService.Insert(seller);
             // retorna pro index
             // o "nameof" permite que, mesmo que a action Index tenha o nome alterado ele ainda reconheça o index
+            return RedirectToAction(nameof(Index));
+        }
+
+        // recebe um int opcional
+        // método leva leva o item a ser deletado pra view Delete
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // como esse id é um nullable (pode ser nulo), tem que utilizar o id.Value para pegar o valor caso exista
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // método Delete, que por ser POST, vai deletar os dados
+        public IActionResult Delete(int id)
+        {
+            // chama o método que irá deletar o item desse Id
+            _sellerService.Remove(id);
+            // depois de deletar, retorna pra Index
             return RedirectToAction(nameof(Index));
         }
     }
