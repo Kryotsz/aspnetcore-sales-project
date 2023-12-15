@@ -3,6 +3,7 @@ using SalesWebMVC.Models;
 using SalesWebMVC.Services.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SalesWebMVC.Services
 {
@@ -16,45 +17,48 @@ namespace SalesWebMVC.Services
         }
 
         // GET
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
             // retorna do banco de dados, todos os vendedores
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
         // POST
         // método que insere o vendedor no banco de dados
-        public void Insert(Seller obj)
+        public async Task InsertAsync(Seller obj)
         {
             // adiciona o vendedor ao banco de dados
+            // essa operação é feita somente em memória
             _context.Add(obj);
             // salva as alterações
-            _context.SaveChanges();
+            // é o SaveChanges que realmente vai acessar o banco de dados
+            await _context.SaveChangesAsync();
         }
 
         // GET by Id
-        public Seller FindById(int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
             // além de retornar o vendedor, retorna também o departamento associado com ele
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
         // DELETE
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
             // guarda na variável obj, o vendedor encontrado pelo Id
-            var obj = _context.Seller.Find(id);
+            var obj = await _context.Seller.FindAsync(id);
             // deleta do banco de dados todas as informações desse vendedor
             _context.Seller.Remove(obj);
             // salva as alterações
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         // UPDATE
-        public void Update(Seller obj)
+        public async Task UpdateAsync(Seller obj)
         {
+            bool hasAny = await _context.Seller.AnyAsync(x => x.Id == obj.Id);
             // verifica se NÃO existe um vendedor no banco de dados com esse Id
-            if (!_context.Seller.Any(x => x.Id == obj.Id))
+            if (!hasAny)
             {
                 throw new NotFoundException("Id not found");
             }
@@ -63,7 +67,7 @@ namespace SalesWebMVC.Services
             {
                 // chama o método Update do EntityFramework pra atualizar o objeto
                 _context.Update(obj);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             // intercepta uma exceção de nível de acesso a dados
             catch (DbUpdateConcurrencyException e)
