@@ -18,5 +18,14 @@ namespace SalesWebMVC.Services
             // retorna do banco de dados, todos os vendedores
             return _context.Seller.ToList();
         }
+
+        // método que insere o vendedor no banco de dados
+        public void Insert(Seller obj)
+        {
+            // adiciona o vendedor ao banco de dados
+            _context.Add(obj);
+            // salva as alterações
+            _context.SaveChanges();
+        }
     }
 }
