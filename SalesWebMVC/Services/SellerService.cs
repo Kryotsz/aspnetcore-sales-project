@@ -2,7 +2,6 @@
 using SalesWebMVC.Models;
 using SalesWebMVC.Services.Exceptions;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SalesWebMVC.Services
@@ -45,12 +44,19 @@ namespace SalesWebMVC.Services
         // DELETE
         public async Task RemoveAsync(int id)
         {
-            // guarda na variável obj, o vendedor encontrado pelo Id
-            var obj = await _context.Seller.FindAsync(id);
-            // deleta do banco de dados todas as informações desse vendedor
-            _context.Seller.Remove(obj);
-            // salva as alterações
-            await _context.SaveChangesAsync();
+            try
+            {
+                // guarda na variável obj, o vendedor encontrado pelo Id
+                var obj = await _context.Seller.FindAsync(id);
+                // deleta do banco de dados todas as informações desse vendedor
+                _context.Seller.Remove(obj);
+                // salva as alterações
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new IntegrityException("Can't delete seller because it has sales");
+            }
         }
 
         // UPDATE

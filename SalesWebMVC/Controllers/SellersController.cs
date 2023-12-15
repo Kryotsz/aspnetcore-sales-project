@@ -6,7 +6,6 @@ using SalesWebMVC.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SalesWebMVC.Controllers
@@ -90,10 +89,17 @@ namespace SalesWebMVC.Controllers
         // método Delete, que por ser POST, vai deletar os dados
         public async Task<IActionResult> Delete(int id)
         {
-            // chama o método que irá deletar o item desse Id
-            await _sellerService.RemoveAsync(id);
-            // depois de deletar, retorna pra Index
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // chama o método que irá deletar o item desse Id
+                await _sellerService.RemoveAsync(id);
+                // depois de deletar, retorna pra Index
+                return RedirectToAction(nameof(Index));
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         // GET Details
