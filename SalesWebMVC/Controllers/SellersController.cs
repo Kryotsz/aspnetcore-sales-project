@@ -2,6 +2,7 @@
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace SalesWebMVC.Controllers
             return View(list);
         }
 
+        // GET Create
         // método Create que leva os dados pra view Create
         public IActionResult Create()
         {
@@ -40,6 +42,7 @@ namespace SalesWebMVC.Controllers
             return View(viewModel);
         }
 
+        // POST Create
         // anotation pra definir que é um método POST
         [HttpPost]
         // anotation que previne ataques CSRF
@@ -53,7 +56,7 @@ namespace SalesWebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Delete GET
+        // GET Delete
         // recebe um int opcional
         // método leva leva o item a ser deletado pra view Delete
         public IActionResult Delete(int? id)
@@ -73,6 +76,7 @@ namespace SalesWebMVC.Controllers
             return View(obj);
         }
 
+        // POST Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         // método Delete, que por ser POST, vai deletar os dados
@@ -84,7 +88,7 @@ namespace SalesWebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Details GET
+        // GET Details
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -99,6 +103,54 @@ namespace SalesWebMVC.Controllers
             }
 
             return View(obj);
+        }
+
+        // GET Edit
+        // o Id é obrigatório, porém utiliza-se como opcional para evitar erros de execução
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            // recebe todos os departamentos
+            List<Department> departments = _departmentService.FindAll();
+            // recebe o vendedor e a lista de departamentos
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            // leva pra view Edit, os dados da viewModel
+            return View(viewModel);
+        }
+
+        // POST Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

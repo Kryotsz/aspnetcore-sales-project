@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Models;
+using SalesWebMVC.Services.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,6 +48,29 @@ namespace SalesWebMVC.Services
             _context.Seller.Remove(obj);
             // salva as alterações
             _context.SaveChanges();
+        }
+
+        // UPDATE
+        public void Update(Seller obj)
+        {
+            // verifica se NÃO existe um vendedor no banco de dados com esse Id
+            if (!_context.Seller.Any(x => x.Id == obj.Id))
+            {
+                throw new NotFoundException("Id not found");
+            }
+
+            try
+            {
+                // chama o método Update do EntityFramework pra atualizar o objeto
+                _context.Update(obj);
+                _context.SaveChanges();
+            }
+            // intercepta uma exceção de nível de acesso a dados
+            catch (DbUpdateConcurrencyException e)
+            {
+                // relança a exceção como nível de serviço, para que a controller só precise lidar com exceções da camada de serviço
+                throw new DbConcurrencyException(e.Message);
+            }
         }
     }
 }
