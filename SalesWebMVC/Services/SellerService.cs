@@ -53,7 +53,7 @@ namespace SalesWebMVC.Services
                 // salva as alterações
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException e)
+            catch (DbUpdateException)
             {
                 throw new IntegrityException("Can't delete seller because it has sales");
             }
